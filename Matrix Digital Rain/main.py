@@ -9,15 +9,12 @@ screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 main_bg_color = (10, 10, 13)
 screen.fill(main_bg_color)
 
-consolas_font = pygame.font.SysFont("Consolas", 15)
+consolas_font = pygame.font.SysFont("Consolas", 18)
 
 
 
 class FallingChar:
     def __init__(self, x: int, y: int):
-        self.char = random.choice(
-            "QWERTYUIOPASDFGHJKLZXCVBNM qwertyuiopasdfghjklzxcvbnm 1234567890 @#№$%&<>"
-        )
         self.x = x
         self.y = y
         time = pygame.time.get_ticks() * 0.001
@@ -26,7 +23,11 @@ class FallingChar:
         self.B = int(128 + 127 * math.sin(time + 4))
 
     def draw(self, surface):
-        text_surface = consolas_font.render(self.char, True, (self.R, self.G, self.B))
+        text_surface = consolas_font.render(
+        random.choice("QWERTYUIOPASDFGHJKLZXCVBNM qwertyuiopasdfghjklzxcvbnm 1234567890 @#№$%&<>"),
+        True,
+        (self.R, self.G, self.B)
+        )
         surface.blit(text_surface, (self.x, self.y))
 
     def update(self):
