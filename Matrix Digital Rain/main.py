@@ -2,6 +2,8 @@ import pygame
 import sys
 import random
 import math
+import ctypes
+
 
 pygame.init()
 pygame.display.set_caption("Matrix Digital Rain")
@@ -10,6 +12,14 @@ main_bg_color = (10, 10, 13)
 screen.fill(main_bg_color)
 
 consolas_font = pygame.font.SysFont("Consolas", 18)
+
+
+def prevent_sleep():
+    ctypes.windll.kernel32.SetThreadExecutionState(0x80000003)
+
+
+def allow_sleep():
+    ctypes.windll.kernel32.SetThreadExecutionState(0x80000000)
 
 
 
@@ -38,25 +48,31 @@ class FallingChar:
 
 falling_chars = []
 
-while True:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-            pygame.quit()
-            sys.exit()
+try:
+    prevent_sleep()
 
-    pygame.time.Clock().tick(30)
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                raise SystemExit
 
-    blackout = pygame.Surface((screen.get_width(), screen.get_height()), pygame.SRCALPHA)
-    blackout.fill((main_bg_color[0], main_bg_color[1], main_bg_color[2], 20))
-    screen.blit(blackout, (0, 0))
+        pygame.time.Clock().tick(30)
 
-    column_index = random.randint(0, screen.get_width() // consolas_font.get_height())
-    char_pos = column_index * consolas_font.get_height()
-    new_char = FallingChar(char_pos, -100)
-    falling_chars.append(new_char)
+        blackout = pygame.Surface((screen.get_width(), screen.get_height()), pygame.SRCALPHA)
+        blackout.fill((main_bg_color[0], main_bg_color[1], main_bg_color[2], 20))
+        screen.blit(blackout, (0, 0))
 
-    falling_chars = [char for char in falling_chars if char.update()]
-    for char in falling_chars:
-        char.draw(screen)
+        column_index = random.randint(0, screen.get_width() // consolas_font.get_height())
+        char_pos = column_index * consolas_font.get_height()
+        new_char = FallingChar(char_pos, -100)
+        falling_chars.append(new_char)
 
-    pygame.display.flip()
+        falling_chars = [char for char in falling_chars if char.update()]
+        for char in falling_chars:
+            char.draw(screen)
+
+        pygame.display.flip()
+finally:
+    allow_sleep()
+    pygame.quit()
+    sys.exit()
