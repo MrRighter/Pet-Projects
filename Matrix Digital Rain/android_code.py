@@ -14,7 +14,7 @@ main_bg_color = (10, 10, 13)
 screen.fill(main_bg_color)
 
 base_path = os.path.dirname(os.path.abspath(__file__))
-font_path = os.path.join(base_path, "Roboto.ttf")
+font_path = os.path.join(base_path, "Roboto_font.ttf")
 consolas_font = pygame.font.Font(font_path, 20)
 
 char_height = consolas_font.get_height()
